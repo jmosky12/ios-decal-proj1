@@ -63,7 +63,7 @@ class AddNewItemViewController: UIViewController, UITextFieldDelegate {
             let titleString = titleTextField.text!
             let detailsString = detailsTextField.text!
             colorString = "grey"
-            info = [titleString, detailsString, colorString]
+            info = [titleString, detailsString, colorString, ""]
             delegate?.addedInfo(info)
             self.navigationController?.popViewControllerAnimated(true)
         }

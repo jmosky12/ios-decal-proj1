@@ -13,6 +13,24 @@ protocol ToDoTableViewControllerDelegate {
     func getCompletion() -> Int?
 }
 
+extension NSDate {
+    
+    func addHours(hoursToAdd : Int) -> NSDate {
+        let secondsInHours : NSTimeInterval = Double(hoursToAdd) * 60 * 60
+        let dateWithHoursAdded : NSDate = self.dateByAddingTimeInterval(secondsInHours)
+        return dateWithHoursAdded
+    }
+    
+    func isLessThanDate(dateToCompare : NSDate) -> Bool {
+        var isLess = false
+        if self.compare(dateToCompare) == NSComparisonResult.OrderedAscending {
+            isLess = true
+        }
+        return isLess
+    }
+    
+}
+
 class ToDoTableViewController: UITableViewController, ToDoTableViewControllerDelegate {
     
     @IBOutlet var statsButton: UIButton!
@@ -65,6 +83,16 @@ class ToDoTableViewController: UITableViewController, ToDoTableViewControllerDel
         } else {
             cellCompleted.backgroundColor = UIColor.greenColor()
         }
+        if String(cellData[indexPath.row][2]) == "green" {
+            var time = cellData[indexPath.row][3] as! NSDate
+            time = time.addHours(24)
+            let currTime = NSDate()
+            print(time.isLessThanDate(currTime))
+            if time.isLessThanDate(currTime) {
+                cellData.removeObjectAtIndex(indexPath.row)
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            }
+        }
         return cell
     }
     
@@ -76,12 +104,15 @@ class ToDoTableViewController: UITableViewController, ToDoTableViewControllerDel
             cellCompleted.backgroundColor = UIColor.greenColor()
             cell.selectionStyle = .None
             temp.replaceObjectAtIndex(2, withObject: "green")
+            let time = NSDate()
+            temp.replaceObjectAtIndex(3, withObject: time)
             cellData.replaceObjectAtIndex(indexPath.row, withObject: temp)
             completion++
         } else {
             cellCompleted.backgroundColor = UIColor.lightGrayColor()
             cell.selectionStyle = .None
             temp.replaceObjectAtIndex(2, withObject: "grey")
+            temp.replaceObjectAtIndex(3, withObject: "")
             cellData.replaceObjectAtIndex(indexPath.row, withObject: temp)
             completion--
         }
